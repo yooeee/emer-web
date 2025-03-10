@@ -2,16 +2,22 @@ import 'ol/ol.css';
 import MapComponent from '../../components/Map';
 import SideBar from '../../components/SideBar';
 import { useState } from 'react';
+import apiCall from '../../utils/api';
 import '../../assets/home.css';
 
 const Home = () => {
-  const [searchParams, setSearchParams] = useState({
-    region: '',
-    name: ''
-  });
+  const [siCd, setSiCd] = useState('');
 
-  const handleSearch = (region: string, name: string) => {
-    setSearchParams({ region, name });
+  const handleSearch = (siCd: string) => {
+    setSiCd(siCd);
+    apiCall("http://localhost:4041/api/sigungu", {siCd : siCd})
+    .then(response => {
+      console.log('API 응답:', response);
+      // 여기서 응답 데이터 처리
+    })
+    .catch(error => {
+      console.error('API 호출 오류:', error);
+    });
   };
 
   return (

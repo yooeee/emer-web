@@ -23,11 +23,11 @@ const regions = [
 ];
 
 interface SideBarProps {
-  onSearch: (region: string, name: string) => void;
+  onSearch: (siCd: string) => void;
 }
 
 const SideBar: React.FC<SideBarProps> = ({ onSearch }) => {
-  const [selectedSido, setSelectedSido] = useState<string>('');
+  const [siCd, setSiCd] = useState<string>('');
   const [selectedSigungu, setSelectedSigungu] = useState<string>('');
   const [hospitalName, setHospitalName] = useState<string>('');
   const [isOpen, setIsOpen] = useState<boolean>(false);
@@ -65,7 +65,7 @@ const SideBar: React.FC<SideBarProps> = ({ onSearch }) => {
   };
 
   const handleSearch = () => {
-    onSearch(selectedSido, hospitalName);
+    onSearch(siCd);
     // 모바일에서 검색 후 사이드바 닫기
     if (isMobile) {
       setIsOpen(false);
@@ -100,8 +100,8 @@ const SideBar: React.FC<SideBarProps> = ({ onSearch }) => {
           <select
             id="sido"
             className="form-select"
-            value={selectedSido}
-            onChange={(e) => setSelectedSido(e.target.value)}
+            value={siCd}
+            onChange={(e) => setSiCd(e.target.value)}
           >
             <option value="">선택하세요</option>
             {regions.map((region) => (
