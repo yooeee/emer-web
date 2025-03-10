@@ -150,6 +150,7 @@ class MapManager {
       }
     );
   }
+  
 
   /**
    * 위치 레이어 제거

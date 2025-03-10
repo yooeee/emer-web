@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import '../assets/SideBar.css';
+import apiCall from '../utils/api';
 
 // 광역시도 목록
 const regions = [
@@ -23,11 +24,13 @@ const regions = [
 ];
 
 interface SideBarProps {
-  onSearch: (siCd: string) => void;
+  onSearch: (siCd: string, sigunguCd: string, name: string) => void;
+  sigunguList: any;
 }
 
 const SideBar: React.FC<SideBarProps> = ({ onSearch }) => {
   const [siCd, setSiCd] = useState<string>('');
+  const [sigunguList, setSigunguList] = useState<any>([]);
   const [selectedSigungu, setSelectedSigungu] = useState<string>('');
   const [hospitalName, setHospitalName] = useState<string>('');
   const [isOpen, setIsOpen] = useState<boolean>(false);
@@ -65,10 +68,21 @@ const SideBar: React.FC<SideBarProps> = ({ onSearch }) => {
   };
 
   const handleSearch = () => {
-    onSearch(siCd);
+
     // 모바일에서 검색 후 사이드바 닫기
     if (isMobile) {
       setIsOpen(false);
+    }
+  };
+
+  const handleSigunguChange = async (siCd: string) => {
+    setSiCd(siCd);
+    try {
+      const result = await apiCall("http://localhost:4041/api/sigungu", {siCd : siCd});
+      setSigunguList(result);
+      console.log(result);
+    } catch (error) {
+      console.error('시군구 데이터 조회 실패:', error);
     }
   };
 
@@ -101,9 +115,8 @@ const SideBar: React.FC<SideBarProps> = ({ onSearch }) => {
             id="sido"
             className="form-select"
             value={siCd}
-            onChange={(e) => setSiCd(e.target.value)}
+            onChange={(e) => handleSigunguChange(e.target.value)}
           >
-            <option value="">선택하세요</option>
             {regions.map((region) => (
               <option key={region.code} value={region.code}>
                 {region.name}
@@ -122,7 +135,11 @@ const SideBar: React.FC<SideBarProps> = ({ onSearch }) => {
                 value={selectedSigungu}
                 onChange={(e) => setSelectedSigungu(e.target.value)}
             >
-                <option value=''>선택하세요</option>
+                {sigunguList.map((sigungu: any) => (
+                    <option key={sigungu.admCode} value={sigungu.lowestAdmCodeNm}>
+                        {sigungu.lowestAdmCodeNm}
+                    </option>
+                ))}
             </select>
         </div>
 
