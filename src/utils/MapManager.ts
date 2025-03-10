@@ -35,8 +35,8 @@ class MapManager {
         }),
       ],
       view: new View({
-        center: fromLonLat([126.978, 37.566]), // 서울 중심으로 설정
-        zoom: 10,
+        center: fromLonLat([127.550, 35.871]), // 대구 중심으로 설정
+        zoom: 7.5,
       }),
       controls: defaultControls({ zoom: false }), // 줌 컨트롤 제거
     });
