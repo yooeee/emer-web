@@ -1,9 +1,11 @@
 package com.emer.main.api;
 
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestParam;
+
+import com.emer.main.dto.SearchDTO;
 
 
 @RestController
@@ -12,7 +14,7 @@ public class EmerApiController {
     
 
     @GetMapping("search")
-    public String getSearch(@RequestParam String param) {
+    public String getSearch(@RequestBody SearchDTO searchDTO) {
         return new String();
     }
     
