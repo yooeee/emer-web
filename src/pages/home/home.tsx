@@ -2,7 +2,7 @@ import 'ol/ol.css';
 import MapComponent from '../../components/Map';
 import SideBar from '../../components/SideBar';
 import { useState } from 'react';
-import './home.css';
+import '../../assets/home.css';
 
 const Home = () => {
   const [searchParams, setSearchParams] = useState({

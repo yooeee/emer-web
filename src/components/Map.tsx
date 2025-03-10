@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import MapManager from '../utils/MapManager';
-import './map.css';
+import '../assets/map.css';
 
 const MapComponent = () => {
   const [locationError, setLocationError] = useState<string | null>(null);

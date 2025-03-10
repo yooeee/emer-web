@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import './SideBar.css';
+import '../assets/SideBar.css';
 
 // 광역시도 목록
 const regions = [
