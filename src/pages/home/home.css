@@ -1,0 +1,21 @@
+.home-container {
+  display: flex;
+  height: 100vh;
+  background-color: #ffffff;
+  position: relative;
+  overflow: hidden;
+}
+
+.map-container {
+  flex-grow: 1;
+  position: relative;
+  transition: margin-left 0.3s ease-in-out;
+}
+
+/* 반응형 스타일 */
+@media (max-width: 768px) {
+  .map-container {
+    width: 100%;
+    margin-left: 0;
+  }
+} 
