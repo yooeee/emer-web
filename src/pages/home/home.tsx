@@ -7,17 +7,17 @@ import '../../assets/home.css';
 
 const Home = () => {
   const [siCd, setSiCd] = useState('');
+  const [sigunguList, setSigunguList] = useState([]);
 
-  const handleSearch = (siCd: string) => {
+  const handleSearch = async (siCd: string) => {
     setSiCd(siCd);
-    apiCall("http://localhost:4041/api/sigungu", {siCd : siCd})
-    .then(response => {
-      console.log('API 응답:', response);
-      // 여기서 응답 데이터 처리
-    })
-    .catch(error => {
-      console.error('API 호출 오류:', error);
-    });
+    try {
+      const result = await apiCall("http://localhost:4041/api/sigungu", {siCd : siCd});
+      setSigunguList(result);
+      console.log(result);
+    } catch (error) {
+      console.error('시군구 데이터 조회 실패:', error);
+    }
   };
 
   return (
