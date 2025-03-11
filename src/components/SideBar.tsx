@@ -23,12 +23,9 @@ const regions = [
   { code: '50', name: '제주특별자치도' }
 ];
 
-interface SideBarProps {
-  onSearch: (siCd: string, sigunguCd: string, name: string) => void;
-  sigunguList: any;
-}
 
-const SideBar: React.FC<SideBarProps> = ({ onSearch }) => {
+
+const SideBar: React.FC = () => {
   const [siCd, setSiCd] = useState<string>('');
   const [sigunguList, setSigunguList] = useState<any>([]);
   const [selectedSigungu, setSelectedSigungu] = useState<string>('');
@@ -68,7 +65,6 @@ const SideBar: React.FC<SideBarProps> = ({ onSearch }) => {
   };
 
   const handleSearch = () => {
-
     // 모바일에서 검색 후 사이드바 닫기
     if (isMobile) {
       setIsOpen(false);
@@ -80,7 +76,6 @@ const SideBar: React.FC<SideBarProps> = ({ onSearch }) => {
     try {
       const result = await apiCall("http://localhost:4041/api/sigungu", {siCd : siCd});
       setSigunguList(result);
-      console.log(result);
     } catch (error) {
       console.error('시군구 데이터 조회 실패:', error);
     }
@@ -117,6 +112,7 @@ const SideBar: React.FC<SideBarProps> = ({ onSearch }) => {
             value={siCd}
             onChange={(e) => handleSigunguChange(e.target.value)}
           >
+            <option value='' disabled>선택하세요</option>
             {regions.map((region) => (
               <option key={region.code} value={region.code}>
                 {region.name}

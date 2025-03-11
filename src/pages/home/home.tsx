@@ -5,16 +5,12 @@ import { useState } from 'react';
 import '../../assets/home.css';
 
 const Home = () => {
-  const [siCd, setSiCd] = useState('');
-  const [sigunguList, setSigunguList] = useState([]);
 
-  const handleSearch = async (siCd: string, sigunguCd: string, name: string) => {
-    
-  };
+
 
   return (
     <div className="home-container">
-      <SideBar onSearch={handleSearch}  sigunguList={sigunguList} />
+      <SideBar  />
       <div className="map-container">
         <MapComponent  />
       </div>

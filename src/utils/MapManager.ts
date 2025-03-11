@@ -6,8 +6,8 @@ import OSM from 'ol/source/OSM';
 import { defaults as defaultControls } from 'ol/control';
 import Feature from 'ol/Feature';
 import Point from 'ol/geom/Point';
-import { Vector as VectorLayer } from 'ol/layer';
-import { Vector as VectorSource } from 'ol/source';
+import { Tile, Vector as VectorLayer } from 'ol/layer';
+import { Vector as VectorSource, XYZ } from 'ol/source';
 import { Style, Circle as CircleStyle, Fill, Stroke } from 'ol/style';
 
 export interface LocationResult {
@@ -27,11 +27,18 @@ class MapManager {
    * @returns 생성된 OpenLayers Map 인스턴스
    */
   initialize(target: string): Map {
+    const baseMap = new XYZ({
+        url: "http://api.vworld.kr/req/wmts/1.0.0/4C6017C6-7F0A-39CF-97F0-730F1490130E/Base/{z}/{y}/{x}.png",
+        crossOrigin: 'anonymous',
+        transition: 0,
+    });
+    
     this.map = new Map({
       target,
       layers: [
-        new TileLayer({
-          source: new OSM(),
+        new Tile({
+            source: baseMap,
+            preload: 20,
         }),
       ],
       view: new View({
