@@ -13,13 +13,13 @@ import com.emer.main.service.EmerService;
 import com.fasterxml.jackson.databind.JsonNode;
 
 @RestController
-@RequestMapping("/api/")
+@RequestMapping("/api")
 public class EmerApiController {
 
     @Autowired
     private EmerService emerService;
 
-    @GetMapping("sigungu")
+    @GetMapping("/sigungu")
     public ResponseDTO getSigungu(@RequestParam String siCd) {
         ResponseDTO responseDTO = new ResponseDTO();
 

@@ -73,7 +73,7 @@ const [siNm, setSiNm] = useState<string>('');
     setSiNm(siNm);
     setSiCd(siCd);
     try {
-      const result = await apiCall("http://localhost:4041/api/sigungu", {siCd : siCd});
+      const result = await apiCall("http://localhost:3030/api/sigungu", {siCd : siCd});
       setSigunguList(result);
     } catch (error) {
       console.error('시군구 데이터 조회 실패:', error);
