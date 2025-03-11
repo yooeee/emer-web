@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import '../assets/SideBar.css';
+import '../assets/common.css';
 import apiCall from '../utils/api';
 
 // 광역시도 목록
@@ -23,12 +24,16 @@ const regions = [
   { code: '50', name: '제주특별자치도' }
 ];
 
+interface SideBarProps {
+  onSearch: (siCd: string, sigunguCd: string, type: string, name: string) => void;
+}
 
-
-const SideBar: React.FC = () => {
+const SideBar: React.FC<SideBarProps> = ({ onSearch }) => {
+const [siNm, setSiNm] = useState<string>('');
   const [siCd, setSiCd] = useState<string>('');
   const [sigunguList, setSigunguList] = useState<any>([]);
-  const [selectedSigungu, setSelectedSigungu] = useState<string>('');
+  const [sigunguNm, setSigunguNm] = useState<string>('');
+  const [type, setType] = useState<string>('');
   const [hospitalName, setHospitalName] = useState<string>('');
   const [isOpen, setIsOpen] = useState<boolean>(false);
   const [isMobile, setIsMobile] = useState<boolean>(false);
@@ -64,14 +69,8 @@ const SideBar: React.FC = () => {
     setIsOpen(!isOpen);
   };
 
-  const handleSearch = () => {
-    // 모바일에서 검색 후 사이드바 닫기
-    if (isMobile) {
-      setIsOpen(false);
-    }
-  };
-
-  const handleSigunguChange = async (siCd: string) => {
+  const handleSigunguChange = async (siNm: string, siCd: string) => {
+    setSiNm(siNm);
     setSiCd(siCd);
     try {
       const result = await apiCall("http://localhost:4041/api/sigungu", {siCd : siCd});
@@ -105,16 +104,20 @@ const SideBar: React.FC = () => {
         <div className="form-group">
           <label htmlFor="sido" className="form-label">
             광역시도
+            <span className="text_red">*</span>
           </label>
           <select
             id="sido"
             className="form-select"
             value={siCd}
-            onChange={(e) => handleSigunguChange(e.target.value)}
+            onChange={(e) => {
+                const selectedOption = e.target.options[e.target.selectedIndex];
+                handleSigunguChange(selectedOption.getAttribute('data-name') || '', e.target.value);
+            }}
           >
             <option value='' disabled>선택하세요</option>
             {regions.map((region) => (
-              <option key={region.code} value={region.code}>
+              <option key={region.code} value={region.code} data-name={region.name}>
                 {region.name}
               </option>
             ))}
@@ -124,18 +127,37 @@ const SideBar: React.FC = () => {
         <div className='form-group'>
             <label htmlFor='sigungu' className='form-label'>
                 시군구
+                <span className="text_red">*</span>
             </label>
             <select
                 id='sigungu'
                 className='form-select'
-                value={selectedSigungu}
-                onChange={(e) => setSelectedSigungu(e.target.value)}
+                value={sigunguNm}
+                onChange={(e) => setSigunguNm(e.target.value)}
             >
+                <option value='' disabled>선택하세요</option>
                 {sigunguList.map((sigungu: any) => (
                     <option key={sigungu.admCode} value={sigungu.lowestAdmCodeNm}>
                         {sigungu.lowestAdmCodeNm}
                     </option>
                 ))}
+            </select>
+        </div>
+
+        <div className='form-group'>
+            <label htmlFor='type' className='form-label'>
+                유형
+                <span className="text_red">*</span>
+            </label>
+            <select
+                id='type'
+                className='form-select'
+                value={type}
+                onChange={(e) => setType(e.target.value)}
+            >
+                <option value='' disabled>선택하세요</option>
+                <option value="getEgytListInfoInqire" selected>응급의료기관 목록정보 조회</option>
+                <option value="getStrmListInfoInqire">외상센터 목록정보 조회</option>
             </select>
         </div>
 
@@ -155,7 +177,7 @@ const SideBar: React.FC = () => {
 
         <button
           className="search-button"
-          onClick={handleSearch}
+          onClick={() => onSearch(siNm, sigunguNm, type, hospitalName)}
         >
           검색
         </button>
