@@ -2,18 +2,24 @@ import 'ol/ol.css';
 import MapComponent from '../../components/Map';
 import SideBar from '../../components/SideBar';
 import { useState } from 'react';
+import apiCall from '../../utils/api';
 import '../../assets/home.css';
 
 const Home = () => {
 
-    const onSearch = (siNm: string, sigunguNm: string, type: string, name: string) => {
+    const onSearch = async (siNm: string, sigunguNm: string, type: string, name: string) => {
         if(siNm === '' || sigunguNm === '' || type === '') {
             alert('모든 항목을 입력해주세요.');
-            console.log(siNm + sigunguNm + type + name);
             return;
-        } else{
-
-            alert(siNm + sigunguNm + type + name);      
+        } else{  
+            const result = await apiCall("http://localhost:3030/api/search", {
+              Q0: siNm,
+              Q1: sigunguNm,
+              pageNo: 1,
+              numOfRows: 999,
+              QN: name,
+              type: type,
+            });    
         }
             
     }

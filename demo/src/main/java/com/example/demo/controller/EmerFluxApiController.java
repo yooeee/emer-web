@@ -8,6 +8,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.example.demo.dto.ResponseDTO;
+import com.example.demo.dto.SearchDTO;
 import com.example.demo.service.EmerFluxService;
 
 import reactor.core.publisher.Mono;
@@ -32,6 +33,19 @@ public class EmerFluxApiController {
             .defaultIfEmpty(ResponseEntity.ok(createEmptyResponse())); // 비어있을 경우 응답 생성
     }
 
+    @GetMapping("/search")
+    public Mono<ResponseEntity<ResponseDTO>> getSearchDatas(SearchDTO searchDTO) {
+        return emerFluxService.getSearchDatas(searchDTO)
+            .map(searchDatas -> {
+                ResponseDTO responseDTO = new ResponseDTO();
+                responseDTO.setResultCode(200);
+                responseDTO.setResultMessage("success");
+                responseDTO.setResult(searchDatas);
+                return ResponseEntity.ok(responseDTO);
+            })
+            .defaultIfEmpty(ResponseEntity.ok(createEmptyResponse()));
+    }
+
     private ResponseDTO createEmptyResponse() {
         ResponseDTO responseDTO = new ResponseDTO();
         responseDTO.setResultCode(200); // 상태 코드를 200으로 설정
@@ -39,4 +53,5 @@ public class EmerFluxApiController {
         responseDTO.setResult(null); // result를 null로 설정
         return responseDTO; // ResponseDTO 반환
     }
+    
 }
