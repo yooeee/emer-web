@@ -26,22 +26,25 @@ const regions = [
 
 interface SideBarProps {
   onSearch: (siCd: string, sigunguCd: string, type: string, name: string) => void;
+  isOpen: boolean;
+  isMobile: boolean;
+  toggleSidebar: () => void;
+  updateIsMobile : (isMobile: boolean) => void;
+  handleOverlayClick: () => void;
 }
 
-const SideBar: React.FC<SideBarProps> = ({ onSearch }) => {
+const SideBar: React.FC<SideBarProps> = ({ onSearch, isOpen, isMobile, toggleSidebar, updateIsMobile, handleOverlayClick }) => {
 const [siNm, setSiNm] = useState<string>('');
   const [siCd, setSiCd] = useState<string>('');
   const [sigunguList, setSigunguList] = useState<any>([]);
   const [sigunguNm, setSigunguNm] = useState<string>('');
   const [type, setType] = useState<string>('');
   const [hospitalName, setHospitalName] = useState<string>('');
-  const [isOpen, setIsOpen] = useState<boolean>(false);
-  const [isMobile, setIsMobile] = useState<boolean>(false);
 
   // 화면 크기 변경 감지
   useEffect(() => {
     const checkIfMobile = () => {
-      setIsMobile(window.innerWidth <= 768);
+      updateIsMobile(window.innerWidth <= 768);
     };
 
     // 초기 체크
@@ -56,18 +59,7 @@ const [siNm, setSiNm] = useState<string>('');
     };
   }, []);
 
-  // 모바일이 아닐 때는 항상 열려있도록
-  useEffect(() => {
-    if (!isMobile) {
-      setIsOpen(true);
-    } else {
-      setIsOpen(false);
-    }
-  }, [isMobile]);
-
-  const toggleSidebar = () => {
-    setIsOpen(!isOpen);
-  };
+ 
 
   const handleSigunguChange = async (siNm: string, siCd: string) => {
     setSiNm(siNm);
@@ -77,12 +69,6 @@ const [siNm, setSiNm] = useState<string>('');
       setSigunguList(result);
     } catch (error) {
       console.error('시군구 데이터 조회 실패:', error);
-    }
-  };
-
-  const handleOverlayClick = () => {
-    if (isMobile) {
-      setIsOpen(false);
     }
   };
 

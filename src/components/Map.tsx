@@ -7,14 +7,14 @@ const MapComponent = ({searchResult}: {searchResult: any}) => {
   const [map, setMap] = useState<MapManager | null>(null);
 
   useEffect(() => {
-    // 지도 초기화 및 MapManager 인스턴스 상태로 저장
-    const instance = new MapManager();
-    instance.initialize('map');
-    setMap(instance);
+
+    const map = new MapManager();
+    map.initialize('map');
+    setMap(map);
 
     // 컴포넌트 언마운트 시 정리
     return () => {
-      instance.cleanup();
+      map.cleanup();
     };
   }, []);
 
