@@ -4,8 +4,12 @@ import SideBar from '../../components/SideBar';
 import { useState } from 'react';
 import apiCall from '../../utils/api';
 import '../../assets/home.css';
+import MapManager from '../../utils/MapManager';
 
 const Home = () => {
+
+    const [searchResult, setSearchResult] = useState([]);
+
 
     const onSearch = async (siNm: string, sigunguNm: string, type: string, name: string) => {
         if(siNm === '' || sigunguNm === '' || type === '') {
@@ -20,6 +24,7 @@ const Home = () => {
               QN: name,
               type: type,
             });    
+            setSearchResult(result);
         }
             
     }
@@ -28,7 +33,7 @@ const Home = () => {
     <div className="home-container">
       <SideBar onSearch={onSearch} />
       <div className="map-container">
-        <MapComponent  />
+        <MapComponent  searchResult={searchResult}/>
       </div>
     </div>
   );

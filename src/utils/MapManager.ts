@@ -6,9 +6,9 @@ import OSM from 'ol/source/OSM';
 import { defaults as defaultControls } from 'ol/control';
 import Feature from 'ol/Feature';
 import Point from 'ol/geom/Point';
-import { Tile, Vector as VectorLayer } from 'ol/layer';
+import { Tile, Vector, Vector as VectorLayer } from 'ol/layer';
 import { Vector as VectorSource, XYZ } from 'ol/source';
-import { Style, Circle as CircleStyle, Fill, Stroke } from 'ol/style';
+import { Style, Circle as CircleStyle, Fill, Stroke, Icon } from 'ol/style';
 
 export interface LocationResult {
   success: boolean;
@@ -20,6 +20,8 @@ export type LocationCallback = (result: LocationResult) => void;
 class MapManager {
   private map: Map | null = null;
   private locationLayer: VectorLayer<VectorSource> | null = null;
+  private markerLayer: VectorLayer<VectorSource> | null = null;
+  
 
   /**
    * 지도 초기화
@@ -67,6 +69,52 @@ class MapManager {
       this.map.setTarget(undefined);
       this.map = null;
     }
+  }
+
+  /**
+   * 마커 그리기
+   * @param searchResult 검색 결과
+   */
+  drawMarker(searchResult: any): void {
+    const map = this.map;
+    const markerVectorSource = new VectorSource();
+
+    if (!map) return;
+
+    this.removeLayer('marker');
+
+    searchResult.forEach((item: any) => {
+      const location = fromLonLat([item.wgs84Lon, item.wgs84Lat]);
+      const markerFeature = new Feature({
+        geometry: new Point(location),
+        name: "marker",
+      });
+      
+      markerFeature.setStyle(new Style({
+        image: new Icon({
+          src: '/assets/images/marker.png',
+          scale: 0.05,
+        }),
+      }));
+
+      markerVectorSource.addFeature(markerFeature);
+    });
+
+    this.markerLayer = new VectorLayer({
+      source: markerVectorSource,
+    });
+    this.markerLayer.set('name', 'marker');
+
+    // 검색결과 마커로 이동
+    const extent = markerVectorSource.getExtent();
+    map.getView().fit(extent, {
+      padding : [100, 100, 100, 100],
+      maxZoom: 14,
+      duration: 500,
+    });
+
+    // 지도에 마커 표시
+    map.addLayer(this.markerLayer);
   }
 
   /**
@@ -168,7 +216,29 @@ class MapManager {
       this.locationLayer = null;
     }
   }
+
+  private removeLayer(name: string) : void {
+    const map = this.map;
+    if(!map) return;
+
+    map.getAllLayers().forEach((layer) => {
+      if(layer.get('name') === name) {
+        map.removeLayer(layer);
+      }
+    }); 
+  }
+
+
+
+
+
+
+
+
 }
 
-// 싱글톤 인스턴스 생성 및 내보내기
-export default new MapManager(); 
+
+
+
+// 싱글톤 인스턴스 대신 클래스 자체를 내보냅니다
+export default MapManager; 

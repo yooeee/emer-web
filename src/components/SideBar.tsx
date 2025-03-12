@@ -99,7 +99,7 @@ const [siNm, setSiNm] = useState<string>('');
       <div className={`overlay ${isOpen && isMobile ? 'show' : ''}`} onClick={handleOverlayClick}></div>
       
       <div className={`sidebar ${isOpen ? 'open' : ''}`}>
-        <h2 className="sidebar-title">응급실 검색</h2>
+        <h2 className="sidebar-title">응급의료기관 정보 조회</h2>
         
         <div className="form-group">
           <label htmlFor="sido" className="form-label">
