@@ -9,6 +9,10 @@ import Point from 'ol/geom/Point';
 import { Tile, Vector, Vector as VectorLayer } from 'ol/layer';
 import { Vector as VectorSource, XYZ } from 'ol/source';
 import { Style, Circle as CircleStyle, Fill, Stroke, Icon } from 'ol/style';
+import Overlay from 'ol/Overlay';
+import { createRoot } from 'react-dom/client';
+import MarkerPopup from '../components/MarkerPopup';
+import React from 'react';
 
 export interface LocationResult {
   success: boolean;
@@ -16,13 +20,17 @@ export interface LocationResult {
 }
 
 export type LocationCallback = (result: LocationResult) => void;
+export type HospitalSelectCallback = (hospital: any) => void;
 
 class MapManager {
   private map: Map | null = null;
   private locationLayer: VectorLayer<VectorSource> | null = null;
   private markerLayer: VectorLayer<VectorSource> | null = null;
+  private popupOverlays: Overlay[] = [];
   
-
+  // 병원 선택 콜백 추가
+  public onHospitalSelect: HospitalSelectCallback | null = null;
+  
   /**
    * 지도 초기화
    * @param target 지도를 렌더링할 HTML 요소의 ID
@@ -66,6 +74,7 @@ class MapManager {
    */
   cleanup(): void {
     if (this.map) {
+      this.removePopupOverlays();
       this.map.setTarget(undefined);
       this.map = null;
     }
@@ -82,12 +91,14 @@ class MapManager {
     if (!map) return;
 
     this.removeLayer('marker');
+    this.removePopupOverlays();
 
     searchResult.forEach((item: any) => {
-      const location = fromLonLat([item.wgs84Lon, item.wgs84Lat]);
+      const location = fromLonLat([parseFloat(item.wgs84Lon), parseFloat(item.wgs84Lat)]);
       const markerFeature = new Feature({
         geometry: new Point(location),
         name: "marker",
+        properties: item
       });
       
       markerFeature.setStyle(new Style({
@@ -98,6 +109,9 @@ class MapManager {
       }));
 
       markerVectorSource.addFeature(markerFeature);
+      
+      // 병원 정보 팝업 생성
+      this.createHospitalPopup(item, location);
     });
 
     this.markerLayer = new VectorLayer({
@@ -105,16 +119,76 @@ class MapManager {
     });
     this.markerLayer.set('name', 'marker');
 
+    // 마커 클릭 이벤트 추가
+    map.on('click', (evt) => {
+      const feature = map.forEachFeatureAtPixel(evt.pixel, (feature) => feature);
+      if (feature && feature.get('name') === 'marker') {
+        const properties = feature.get('properties');
+        if (this.onHospitalSelect) {
+          this.onHospitalSelect(properties);
+        }
+      }
+    });
+
     // 검색결과 마커로 이동
     const extent = markerVectorSource.getExtent();
     map.getView().fit(extent, {
-      padding : [100, 100, 100, 100],
+      padding: [100, 100, 100, 100],
       maxZoom: 14,
       duration: 500,
     });
 
     // 지도에 마커 표시
     map.addLayer(this.markerLayer);
+  }
+
+  /**
+   * 병원 정보 팝업 생성
+   * @param hospital 병원 정보
+   * @param location 위치 좌표
+   */
+  private createHospitalPopup(hospital: any, location: number[]): void {
+    if (!this.map) return;
+    
+    // 팝업 요소 생성
+    const popupElement = document.createElement('div');
+    popupElement.className = 'popup-container';
+    
+    // 클릭 이벤트 추가
+    popupElement.addEventListener('click', () => {
+      if (this.onHospitalSelect) {
+        this.onHospitalSelect(hospital);
+      }
+    });
+    
+    // React 컴포넌트 렌더링
+    const root = createRoot(popupElement);
+    root.render(React.createElement(MarkerPopup, { hospital }));
+    
+    // 오버레이 생성
+    const popup = new Overlay({
+      element: popupElement,
+      position: location,
+      positioning: 'bottom-center',
+      stopEvent: false
+    });
+    
+    // 지도에 오버레이 추가
+    this.map.addOverlay(popup);
+    this.popupOverlays.push(popup);
+  }
+  
+  /**
+   * 팝업 오버레이 제거
+   */
+  private removePopupOverlays(): void {
+    if (!this.map) return;
+    
+    this.popupOverlays.forEach(overlay => {
+      this.map!.removeOverlay(overlay);
+    });
+    
+    this.popupOverlays = [];
   }
 
   /**
@@ -227,18 +301,7 @@ class MapManager {
       }
     }); 
   }
-
-
-
-
-
-
-
-
 }
-
-
-
 
 // 싱글톤 인스턴스 대신 클래스 자체를 내보냅니다
 export default MapManager; 

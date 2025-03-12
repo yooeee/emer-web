@@ -1,0 +1,80 @@
+.marker-popup {
+  position: absolute;
+  background: white;
+  box-shadow: 0 2px 12px rgba(33, 37, 41, 0.12);
+  border-radius: 12px;
+  padding: 16px;
+  min-width: 300px;
+  transform: translate(-50%, -100%);
+  margin-top: -15px;
+  z-index: 10;
+  pointer-events: auto;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', sans-serif;
+  border: 1px solid rgba(0, 0, 0, 0.04);
+  transition: opacity 0.2s ease;
+  cursor: pointer;
+}
+
+.marker-popup:hover {
+  box-shadow: 0 4px 16px rgba(33, 37, 41, 0.16);
+}
+
+.marker-popup::after {
+  content: '';
+  position: absolute;
+  bottom: -8px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 0;
+  height: 0;
+  border-left: 8px solid transparent;
+  border-right: 8px solid transparent;
+  border-top: 8px solid white;
+}
+
+.hospital-name {
+  font-size: 16px;
+  font-weight: 700;
+  color: #191f28;
+  margin-bottom: 12px;
+  letter-spacing: -0.5px;
+  line-height: 1.3;
+}
+
+.hospital-info {
+  font-size: 13px;
+  color: #4e5968;
+  letter-spacing: -0.3px;
+}
+
+.hospital-type {
+  display: inline-block;
+  color: #3182f6;
+  font-weight: 600;
+  margin-bottom: 8px;
+  font-size: 12px;
+  background-color: rgba(49, 130, 246, 0.08);
+  padding: 4px 8px;
+  border-radius: 4px;
+}
+
+.hospital-address {
+  margin-bottom: 8px;
+  color: #4e5968;
+  font-size: 13px;
+  line-height: 1.5;
+}
+
+.hospital-tel {
+  color: #191f28;
+  font-size: 13px;
+  font-weight: 500;
+  display: flex;
+  align-items: center;
+}
+
+.hospital-tel::before {
+  content: '☎';
+  margin-right: 6px;
+  color: #3182f6;
+} 

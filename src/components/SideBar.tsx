@@ -4,7 +4,7 @@ import '../assets/common.css';
 import apiCall from '../utils/api';
 
 // 광역시도 목록
-const regions = [
+const sidos = [
   { code: '11', name: '서울특별시' },
   { code: '26', name: '부산광역시' },
   { code: '27', name: '대구광역시' },
@@ -102,7 +102,7 @@ const [siNm, setSiNm] = useState<string>('');
             }}
           >
             <option value='' disabled>선택하세요</option>
-            {regions.map((region) => (
+            {sidos.map((region) => (
               <option key={region.code} value={region.code} data-name={region.name}>
                 {region.name}
               </option>
