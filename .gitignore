@@ -17,6 +17,8 @@
 .env.development.local
 .env.test.local
 .env.production.local
+.env*
+!.env.example
 
 npm-debug.log*
 yarn-debug.log*
@@ -61,5 +63,4 @@ build/
 /application.properties
 **/application.properties
 main/src/main/resources/application.properties
-
 
