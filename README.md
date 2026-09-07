@@ -31,6 +31,18 @@ npx tsc --noEmit
 
 배포 산출물은 `build/`입니다. API 연결 주소는 **빌드할 때** 반영됩니다. GitHub 저장소 수정만으로 실행 중인 서버 파일이 자동 교체되지는 않습니다.
 
+## GitHub Pages 배포
+
+`.github/workflows/deploy-pages.yml`은 `main` 변경 시 TypeScript 검사, 테스트, React 빌드를 거쳐 GitHub Pages에 배포합니다. PR에서는 검사·빌드만 실행합니다.
+
+최초 한 번 [저장소 Pages 설정](https://github.com/yooeee/emer-web/settings/pages)에서 **Build and deployment → Source → GitHub Actions**를 선택하세요. 이후 [배포 작업](https://github.com/yooeee/emer-web/actions/workflows/deploy-pages.yml)의 **Run workflow → main → Run workflow**로 첫 배포를 실행합니다. 그다음부터는 `main`에 반영할 때 자동으로 배포합니다.
+
+이 저장소의 기본 Pages 주소는 `https://yooeee.github.io/emer-web/`입니다. 워크플로는 `PUBLIC_URL=/emer-web`로 빌드하여 JavaScript·CSS·아이콘이 이 하위 경로에서 로드되게 합니다. 로컬 및 EC2 빌드는 기존처럼 `npm run build`로 루트(`/`)에 배포할 수 있습니다.
+
+GitHub Pages는 React 정적 파일을 제공하며 Spring 서버를 실행하지 않습니다. 지도와 화면은 확인할 수 있고, 병원 검색에는 별도 HTTPS API가 필요합니다. 연결할 때는 저장소의 **Settings → Secrets and variables → Actions → Variables**에 `EMER_API_BASE_URL`을 등록하고 다시 배포하세요. 값은 API 출처(예: `https://api.your-domain.example`)이며 `/api`는 코드에서 붙입니다. 해당 Spring 서버의 CORS 허용 출처에는 `https://yooeee.github.io`를 추가합니다. 공공데이터 API 키는 서버에만 설정하세요.
+
+배포 방법은 [GitHub Pages 공식 안내](https://docs.github.com/en/pages/getting-started-with-github-pages/using-custom-workflows-with-github-pages)를 따릅니다.
+
 ## API 연결
 
 기본값은 현재 웹사이트와 같은 호스트의 `/api`입니다. Nginx에서 `/api/`를 기존 Spring 서버로 프록시하면 됩니다. 별도 API 도메인을 사용하려면 `REACT_APP_API_BASE_URL`에 출처 주소만 설정하고, Spring에서도 해당 웹 출처의 CORS를 허용하세요.
